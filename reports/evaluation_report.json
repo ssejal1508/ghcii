@@ -1,114 +1,100 @@
 {
   "overall_metrics": {
-    "macro_f1": 0.9528497216861821,
-    "micro_f1": 0.952,
-    "weighted_f1": 0.9530282569936648,
-    "accuracy": 0.952
+    "macro_f1": 0.9634189177689673,
+    "micro_f1": 0.961,
+    "weighted_f1": 0.96195653016416,
+    "accuracy": 0.961
   },
   "per_class_metrics": [
     {
       "Category": "Bills & Utilities",
-      "Precision": 0.9861111111111112,
-      "Recall": 0.9861111111111112,
-      "F1-Score": 0.9861111111111112,
-      "Support": 72
+      "Precision": 0.9855072463768116,
+      "Recall": 0.9714285714285714,
+      "F1-Score": 0.9784172661870504,
+      "Support": 70
     },
     {
       "Category": "Education",
       "Precision": 1.0,
-      "Recall": 0.9761904761904762,
-      "F1-Score": 0.9879518072289156,
-      "Support": 84
+      "Recall": 0.9885057471264368,
+      "F1-Score": 0.9942196531791907,
+      "Support": 87
     },
     {
       "Category": "Entertainment",
       "Precision": 1.0,
-      "Recall": 0.9647058823529412,
-      "F1-Score": 0.9820359281437125,
-      "Support": 85
+      "Recall": 0.967741935483871,
+      "F1-Score": 0.9836065573770492,
+      "Support": 93
     },
     {
       "Category": "Food - Delivery",
       "Precision": 1.0,
-      "Recall": 0.7654320987654321,
-      "F1-Score": 0.8671328671328671,
-      "Support": 81
+      "Recall": 0.8817204301075269,
+      "F1-Score": 0.9371428571428572,
+      "Support": 93
     },
     {
       "Category": "Food - Dining Out",
-      "Precision": 0.8604651162790697,
-      "Recall": 0.9866666666666667,
-      "F1-Score": 0.9192546583850931,
-      "Support": 75
+      "Precision": 0.9036144578313253,
+      "Recall": 0.9375,
+      "F1-Score": 0.9202453987730062,
+      "Support": 80
     },
     {
       "Category": "Food - Groceries",
       "Precision": 1.0,
-      "Recall": 0.9183673469387755,
-      "F1-Score": 0.9574468085106383,
-      "Support": 98
+      "Recall": 0.9375,
+      "F1-Score": 0.967741935483871,
+      "Support": 80
     },
     {
       "Category": "Health & Fitness",
-      "Precision": 1.0,
-      "Recall": 1.0,
-      "F1-Score": 1.0,
-      "Support": 83
+      "Precision": 0.9605263157894737,
+      "Recall": 0.9864864864864865,
+      "F1-Score": 0.9733333333333334,
+      "Support": 74
     },
     {
       "Category": "Other",
       "Precision": 1.0,
       "Recall": 1.0,
       "F1-Score": 1.0,
-      "Support": 92
+      "Support": 81
     },
     {
       "Category": "Shopping - Essentials",
       "Precision": 1.0,
-      "Recall": 0.9120879120879121,
-      "F1-Score": 0.9540229885057471,
-      "Support": 91
+      "Recall": 0.9418604651162791,
+      "F1-Score": 0.9700598802395209,
+      "Support": 86
     },
     {
       "Category": "Shopping - Non-Essentials",
-      "Precision": 0.9859154929577465,
-      "Recall": 0.9722222222222222,
-      "F1-Score": 0.9790209790209791,
-      "Support": 72
+      "Precision": 0.9866666666666667,
+      "Recall": 0.961038961038961,
+      "F1-Score": 0.9736842105263158,
+      "Support": 77
     },
     {
       "Category": "Transfer - Personal",
-      "Precision": 0.7391304347826086,
+      "Precision": 0.7983870967741935,
       "Recall": 1.0,
-      "F1-Score": 0.85,
-      "Support": 85
+      "F1-Score": 0.8878923766816144,
+      "Support": 99
     },
     {
       "Category": "Transportation",
-      "Precision": 0.9512195121951219,
-      "Recall": 0.9512195121951219,
-      "F1-Score": 0.9512195121951219,
-      "Support": 82
+      "Precision": 0.9871794871794872,
+      "Recall": 0.9625,
+      "F1-Score": 0.9746835443037974,
+      "Support": 80
     }
   ],
   "confusion_matrix": [
     [
-      71,
+      68,
       0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      0
-    ],
-    [
-      0,
-      82,
       0,
       0,
       0,
@@ -122,38 +108,10 @@
     ],
     [
       0,
-      0,
-      82,
-      0,
+      86,
       0,
       0,
       0,
-      0,
-      0,
-      0,
-      3,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      62,
-      12,
-      0,
-      0,
-      0,
-      0,
-      0,
-      3,
-      4
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      74,
       0,
       0,
       0,
@@ -163,9 +121,6 @@
       0
     ],
     [
-      1,
-      0,
-      0,
       0,
       0,
       90,
@@ -173,117 +128,157 @@
       0,
       0,
       0,
-      7,
+      0,
+      0,
+      0,
+      3,
       0
     ],
     [
       0,
       0,
       0,
-      0,
-      0,
-      0,
-      83,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    [
+      82,
+      8,
       0,
       0,
       0,
       0,
       0,
-      0,
-      0,
-      92,
-      0,
-      0,
-      0,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      83,
-      1,
-      7,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      70,
       2,
-      0
+      1
     ],
     [
       0,
       0,
       0,
       0,
+      75,
       0,
       0,
       0,
       0,
       0,
-      0,
-      85,
+      5,
       0
     ],
     [
+      1,
       0,
       0,
       0,
       0,
-      0,
-      0,
+      75,
       0,
       0,
       0,
       0,
       4,
-      78
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      73,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      81,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      81,
+      1,
+      4,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      74,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      99,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      77
     ]
   ],
   "top_misclassifications": [
     {
       "true": "Food - Delivery",
       "predicted": "Food - Dining Out",
-      "count": 12
+      "count": 8
+    },
+    {
+      "true": "Food - Dining Out",
+      "predicted": "Transfer - Personal",
+      "count": 5
     },
     {
       "true": "Food - Groceries",
       "predicted": "Transfer - Personal",
-      "count": 7
-    },
-    {
-      "true": "Shopping - Essentials",
-      "predicted": "Transfer - Personal",
-      "count": 7
-    },
-    {
-      "true": "Food - Delivery",
-      "predicted": "Transportation",
       "count": 4
     },
     {
-      "true": "Transportation",
+      "true": "Shopping - Essentials",
       "predicted": "Transfer - Personal",
       "count": 4
     },
@@ -293,22 +288,27 @@
       "count": 3
     },
     {
-      "true": "Food - Delivery",
+      "true": "Shopping - Non-Essentials",
+      "predicted": "Health & Fitness",
+      "count": 3
+    },
+    {
+      "true": "Transportation",
       "predicted": "Transfer - Personal",
       "count": 3
     },
     {
-      "true": "Education",
-      "predicted": "Transfer - Personal",
-      "count": 2
-    },
-    {
-      "true": "Shopping - Non-Essentials",
-      "predicted": "Transfer - Personal",
-      "count": 2
-    },
-    {
       "true": "Bills & Utilities",
+      "predicted": "Transfer - Personal",
+      "count": 2
+    },
+    {
+      "true": "Food - Delivery",
+      "predicted": "Transfer - Personal",
+      "count": 2
+    },
+    {
+      "true": "Education",
       "predicted": "Transfer - Personal",
       "count": 1
     }

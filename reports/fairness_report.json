@@ -1,84 +1,84 @@
 {
-  "timestamp": "2025-11-19T22:24:28.372998",
+  "timestamp": "2025-11-20T00:04:04.386845",
   "metrics": {
     "amount_bias": [
       {
         "amount_range": "<\u20b9100",
-        "count": 12,
-        "accuracy": 1.0,
-        "avg_confidence": 0.9493333333333333
+        "count": 19,
+        "accuracy": 0.9473684210526315,
+        "avg_confidence": 0.9339999999999999
       },
       {
         "amount_range": "\u20b9100-500",
-        "count": 220,
-        "accuracy": 0.9,
-        "avg_confidence": 0.8929681818181818
+        "count": 237,
+        "accuracy": 0.9240506329113924,
+        "avg_confidence": 0.8985569620253165
       },
       {
         "amount_range": "\u20b9500-1K",
-        "count": 143,
-        "accuracy": 0.951048951048951,
-        "avg_confidence": 0.8709790209790209
+        "count": 142,
+        "accuracy": 0.9647887323943662,
+        "avg_confidence": 0.8735985915492958
       },
       {
         "amount_range": "\u20b91K-5K",
-        "count": 295,
-        "accuracy": 0.9559322033898305,
-        "avg_confidence": 0.8521864406779661
+        "count": 262,
+        "accuracy": 0.9465648854961832,
+        "avg_confidence": 0.8418244274809161
       },
       {
         "amount_range": ">\u20b95K",
-        "count": 330,
-        "accuracy": 0.9818181818181818,
-        "avg_confidence": 0.8260939393939395
+        "count": 340,
+        "accuracy": 0.9970588235294118,
+        "avg_confidence": 0.8406029411764706
       }
     ],
     "merchant_bias": {
-      "brand_accuracy": 0.9066666666666666,
-      "local_accuracy": 0.9556756756756757
+      "brand_accuracy": 0.927536231884058,
+      "local_accuracy": 0.9634801288936627
     },
     "confidence_distribution": {
       "mean": {
-        "Bills & Utilities": 0.8917361111111111,
-        "Education": 0.8367560975609757,
-        "Entertainment": 0.8916463414634146,
-        "Food - Delivery": 0.9162096774193549,
-        "Food - Dining Out": 0.8599418604651162,
-        "Food - Groceries": 0.8457333333333333,
-        "Health & Fitness": 0.8483493975903614,
-        "Other": 0.6995543478260869,
-        "Shopping - Essentials": 0.8200602409638554,
-        "Shopping - Non-Essentials": 0.7904366197183099,
-        "Transfer - Personal": 0.9413652173913043,
-        "Transportation": 0.9314146341463415
+        "Bills & Utilities": 0.9123043478260869,
+        "Education": 0.8334418604651163,
+        "Entertainment": 0.8727666666666667,
+        "Food - Delivery": 0.9229268292682926,
+        "Food - Dining Out": 0.8744096385542168,
+        "Food - Groceries": 0.8346,
+        "Health & Fitness": 0.8250921052631579,
+        "Other": 0.6983086419753086,
+        "Shopping - Essentials": 0.8395185185185186,
+        "Shopping - Non-Essentials": 0.7860666666666667,
+        "Transfer - Personal": 0.9608709677419355,
+        "Transportation": 0.9194743589743589
       },
       "std": {
-        "Bills & Utilities": 0.13242654015255476,
-        "Education": 0.1389904127589523,
-        "Entertainment": 0.11791243580434617,
-        "Food - Delivery": 0.12232181917301539,
-        "Food - Dining Out": 0.12267483126985008,
-        "Food - Groceries": 0.13593808901460916,
-        "Health & Fitness": 0.13023725383398577,
-        "Other": 0.02008244771344871,
-        "Shopping - Essentials": 0.1456901447524506,
-        "Shopping - Non-Essentials": 0.13527767553067246,
-        "Transfer - Personal": 0.0802124733742873,
-        "Transportation": 0.08405127054062972
+        "Bills & Utilities": 0.12463267255841748,
+        "Education": 0.13200121253018518,
+        "Entertainment": 0.11746996269187902,
+        "Food - Delivery": 0.10386883710086744,
+        "Food - Dining Out": 0.11189324574142394,
+        "Food - Groceries": 0.14094679847375033,
+        "Health & Fitness": 0.14271642536924553,
+        "Other": 0.019339494548273887,
+        "Shopping - Essentials": 0.12014638062704087,
+        "Shopping - Non-Essentials": 0.14805945968969228,
+        "Transfer - Personal": 0.058531899126169,
+        "Transportation": 0.08978556334927897
       },
       "count": {
-        "Bills & Utilities": 72,
-        "Education": 82,
-        "Entertainment": 82,
-        "Food - Delivery": 62,
-        "Food - Dining Out": 86,
-        "Food - Groceries": 90,
-        "Health & Fitness": 83,
-        "Other": 92,
-        "Shopping - Essentials": 83,
-        "Shopping - Non-Essentials": 71,
-        "Transfer - Personal": 115,
-        "Transportation": 82
+        "Bills & Utilities": 69,
+        "Education": 86,
+        "Entertainment": 90,
+        "Food - Delivery": 82,
+        "Food - Dining Out": 83,
+        "Food - Groceries": 75,
+        "Health & Fitness": 76,
+        "Other": 81,
+        "Shopping - Essentials": 81,
+        "Shopping - Non-Essentials": 75,
+        "Transfer - Personal": 124,
+        "Transportation": 78
       }
     }
   },

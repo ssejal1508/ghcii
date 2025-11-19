@@ -1,14 +1,14 @@
 # SmartLabel Evaluation Report
 
-**Generated:** 2025-11-19 22:24:28
+**Generated:** 2025-11-20 00:04:04
 
 ---
 
 ## Executive Summary
 
-- **Macro F1 Score:** 0.9528
+- **Macro F1 Score:** 0.9634
 - **Target Achievement:** PASSED (>=0.90)
-- **Overall Accuracy:** 0.9520
+- **Overall Accuracy:** 0.9610
 
 ---
 
@@ -16,18 +16,18 @@
 
 | Category | Precision | Recall | F1-Score | Support |
 |----------|-----------|--------|----------|---------|
-| Bills & Utilities | 0.986 | 0.986 | 0.986 | 72 |
-| Education | 1.000 | 0.976 | 0.988 | 84 |
-| Entertainment | 1.000 | 0.965 | 0.982 | 85 |
-| Food - Delivery | 1.000 | 0.765 | 0.867 | 81 |
-| Food - Dining Out | 0.860 | 0.987 | 0.919 | 75 |
-| Food - Groceries | 1.000 | 0.918 | 0.957 | 98 |
-| Health & Fitness | 1.000 | 1.000 | 1.000 | 83 |
-| Other | 1.000 | 1.000 | 1.000 | 92 |
-| Shopping - Essentials | 1.000 | 0.912 | 0.954 | 91 |
-| Shopping - Non-Essentials | 0.986 | 0.972 | 0.979 | 72 |
-| Transfer - Personal | 0.739 | 1.000 | 0.850 | 85 |
-| Transportation | 0.951 | 0.951 | 0.951 | 82 |
+| Bills & Utilities | 0.986 | 0.971 | 0.978 | 70 |
+| Education | 1.000 | 0.989 | 0.994 | 87 |
+| Entertainment | 1.000 | 0.968 | 0.984 | 93 |
+| Food - Delivery | 1.000 | 0.882 | 0.937 | 93 |
+| Food - Dining Out | 0.904 | 0.938 | 0.920 | 80 |
+| Food - Groceries | 1.000 | 0.938 | 0.968 | 80 |
+| Health & Fitness | 0.961 | 0.986 | 0.973 | 74 |
+| Other | 1.000 | 1.000 | 1.000 | 81 |
+| Shopping - Essentials | 1.000 | 0.942 | 0.970 | 86 |
+| Shopping - Non-Essentials | 0.987 | 0.961 | 0.974 | 77 |
+| Transfer - Personal | 0.798 | 1.000 | 0.888 | 99 |
+| Transportation | 0.987 | 0.963 | 0.975 | 80 |
 
 ---
 
@@ -35,11 +35,11 @@
 
 ### Top Misclassifications
 
-- **Food - Delivery** -> Food - Dining Out (12 times)
-- **Food - Groceries** -> Transfer - Personal (7 times)
-- **Shopping - Essentials** -> Transfer - Personal (7 times)
-- **Food - Delivery** -> Transportation (4 times)
-- **Transportation** -> Transfer - Personal (4 times)
+- **Food - Delivery** -> Food - Dining Out (8 times)
+- **Food - Dining Out** -> Transfer - Personal (5 times)
+- **Food - Groceries** -> Transfer - Personal (4 times)
+- **Shopping - Essentials** -> Transfer - Personal (4 times)
+- **Entertainment** -> Transfer - Personal (3 times)
 
 ---
 

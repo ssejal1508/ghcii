@@ -1,30 +1,40 @@
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, session
 import pandas as pd
 import numpy as np
 import random
 import os
 from src.hybrid_system import SmartLabelSystem
 from src.ml_classifier import MLTransactionClassifier
+from src.feature_extractor import FeatureExtractor
+from src.embedding_generator import EmbeddingGenerator
 import json
+from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = 'smartlabel_secret_key_2024'  # For session management
 
 # Initialize the SmartLabel system
 print("Loading SmartLabel AI system...")
 smart_label = SmartLabelSystem('config/categories.json', confidence_threshold=0.80)
+feature_extractor = FeatureExtractor()
+embedding_generator = EmbeddingGenerator()
 
 # Load the trained model
 try:
     ml_classifier = MLTransactionClassifier()
     ml_classifier.load_model('models/')
     smart_label.ml_classifier = ml_classifier
-    print("✓ AI model loaded successfully")
+    
+    # Load embeddings
+    embedding_generator.load('models/embeddings.pkl')
+    print("✓ AI model and embeddings loaded successfully")
 except Exception as e:
     print(f"⚠ Warning: Could not load model - {e}")
     print("Please run 'python main.py' first to train the model")
 
-# Store user feedback
+# Store user feedback and transaction history
 feedback_log = []
+transaction_history = []  # Store all classified transactions
 
 @app.route('/')
 def index():
@@ -37,109 +47,63 @@ def classify_transaction():
     try:
         data = request.json
         
-        # Parse timestamp
-        timestamp_str = data.get('timestamp', '')
-        if timestamp_str:
-            dt = pd.to_datetime(timestamp_str)
-        else:
-            dt = pd.Timestamp.now()
-        
-        merchant = data.get('merchant', '')
-        amount = float(data.get('amount', 0))
-        
-        # Create a COMPLETE transaction object with ALL required features
-        transaction = {
-            # Basic info
-            'transaction_id': 'WEB' + str(pd.Timestamp.now().timestamp())[:10],
-            'merchant': merchant,
-            'amount': amount,
-            'timestamp': dt.strftime('%Y-%m-%d %H:%M:%S'),
-            'upi_reference': f'UPI{random.randint(100000000, 999999999)}',
-            'category': 'Unknown',  # To be predicted
-            
-            # Temporal features
-            'year': dt.year,
-            'month': dt.month,
-            'day': dt.day,
-            'hour': dt.hour,
-            'minute': dt.minute,
-            'day_of_week': dt.dayofweek,
-            'is_weekend': 1 if dt.dayofweek >= 5 else 0,
-            'is_month_start': 1 if dt.day <= 5 else 0,
-            'is_month_end': 1 if dt.day >= 25 else 0,
-            
-            # Amount features
-            'amount_rounded': round(amount, 0),
-            'amount_log': round(np.log1p(amount), 4),
-            'is_round_amount': 1 if amount % 10 == 0 else 0,
-            'amount_last_digit': int(amount) % 10,
-            'amount_decimal': round(amount % 1, 2),
-            'is_large_transaction': 1 if amount > 5000 else 0,
-            'is_micro_transaction': 1 if amount < 100 else 0,
-            
-            # Merchant text features
-            'merchant_length': len(merchant),
-            'merchant_word_count': len(merchant.split()),
-            'merchant_uppercase_count': sum(1 for c in merchant if c.isupper()),
-            'merchant_lowercase_count': sum(1 for c in merchant if c.islower()),
-            'merchant_digit_count': sum(1 for c in merchant if c.isdigit()),
-            'merchant_special_char_count': sum(1 for c in merchant if not c.isalnum() and c != ' '),
-            'merchant_has_upi_prefix': 1 if merchant.lower().startswith(('upi', 'gpay', 'paytm', 'phonepe')) else 0,
-            'merchant_has_numbers': 1 if any(c.isdigit() for c in merchant) else 0,
-            'merchant_has_city': 0,  # Default
-            'merchant_has_pvt_ltd': 1 if 'pvt' in merchant.lower() or 'ltd' in merchant.lower() else 0,
-            'merchant_all_caps': 1 if merchant.isupper() else 0,
-            'merchant_first_char': merchant[0] if merchant else '',
-            'merchant_last_char': merchant[-1] if merchant else '',
-            
-            # Payment features
+        # Extract comprehensive features from raw transaction
+        raw_transaction = {
+            'merchant': data.get('merchant', ''),
+            'amount': data.get('amount', 0),
+            'timestamp': data.get('timestamp', ''),
             'payment_method': data.get('payment_method', 'UPI'),
-            'payment_app': data.get('payment_app', 'GPay'),
-            'card_type': 'N/A',
-            'bank_name': 'HDFC',
-            'is_online': 1,
-            'is_contactless': 1 if data.get('payment_method', 'UPI') == 'UPI' else 0,
-            'requires_otp': 1 if amount > 2000 else 0,
-            
-            # Location features
-            'city': 'Bangalore',
-            'location_type': 'Online',
-            'merchant_city': 'Bangalore',
-            'is_same_city': 1,
-            'distance_from_home_km': 5.0,
-            
-            # User behavior
-            'is_recurring': 0,
-            'merchant_visit_count': data.get('visit_count', 1),
-            'days_since_last_transaction': 7,
-            'transaction_sequence_number': 100,
-            'time_since_last_txn_hours': 24.0,
-            'is_first_time_merchant': 0,
-            'merchant_category_frequency': 10,
-            'avg_monthly_spend_category': 5000.0,
-            'is_unusual_time': 1 if dt.hour < 6 or dt.hour > 23 else 0,
-            
-            # Transaction context
-            'description': f'Payment to {merchant}',
-            'narration': f'Paid to {merchant}',
-            'merchant_category_code': data.get('mcc', '9999'),
-            'currency': 'INR',
-            'exchange_rate': 1.0,
-            'tax_amount': 0.0,
-            'tip_amount': 0.0,
-            'discount_amount': 0.0,
-            'cashback_amount': 0.0,
-            
-            # Risk features
-            'risk_score': 0.2,
-            'is_verified_merchant': 1,
-            'merchant_rating': 4.5,
-            'transaction_status': 'Success',
-            'failure_reason': 'N/A'
+            'payment_app': data.get('payment_app', ''),
+            'city': data.get('city', ''),
+            'visit_count': data.get('visit_count', None),
+            'mcc': data.get('mcc', ''),
         }
+        
+        # Use feature extractor to intelligently extract all 70+ features
+        transaction = feature_extractor.extract_from_transaction(raw_transaction)
+        
+        # Generate embeddings
+        merchant = transaction.get('merchant', '')
+        description = transaction.get('description', '')
+        embedding = embedding_generator.generate_embeddings(merchant, description)
+        
+        # Find similar transactions from history
+        similar_transactions = []
+        if len(transaction_history) > 0:
+            history_embeddings = [t['embedding'] for t in transaction_history]
+            similar_indices = embedding_generator.find_similar_transactions(
+                embedding, history_embeddings, top_k=3
+            )
+            similar_transactions = [
+                {
+                    'merchant': transaction_history[idx]['merchant'],
+                    'category': transaction_history[idx]['category'],
+                    'amount': transaction_history[idx]['amount'],
+                    'similarity': round(sim * 100, 1)
+                }
+                for idx, sim in similar_indices if sim > 0.3
+            ]
         
         # Classify
         result = smart_label.classify_transaction(transaction)
+        
+        # Store in history
+        history_entry = {
+            'id': len(transaction_history) + 1,
+            'merchant': merchant,
+            'amount': transaction.get('amount', 0),
+            'category': result['category'],
+            'confidence': result['confidence'],
+            'timestamp': transaction.get('timestamp', datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+            'payment_method': transaction.get('payment_method', 'UPI'),
+            'embedding': embedding.tolist(),
+            'needs_review': result['needs_feedback']
+        }
+        transaction_history.append(history_entry)
+        
+        # Keep only last 100 transactions in memory
+        if len(transaction_history) > 100:
+            transaction_history.pop(0)
         
         return jsonify({
             'success': True,
@@ -147,7 +111,9 @@ def classify_transaction():
             'confidence': result['confidence'],
             'needs_feedback': result['needs_feedback'],
             'explanation': result['explanation'],
-            'alternatives': result['alternative_predictions']
+            'alternatives': result['alternative_predictions'],
+            'similar_transactions': similar_transactions,
+            'transaction_id': history_entry['id']
         })
     
     except Exception as e:
@@ -174,12 +140,16 @@ def classify_bulk():
         
         results = []
         for idx, row in df.iterrows():
-            transaction = row.to_dict()
+            # Extract features from each transaction
+            raw_transaction = row.to_dict()
+            transaction = feature_extractor.extract_from_transaction(raw_transaction)
+            
+            # Classify
             result = smart_label.classify_transaction(transaction)
             
             results.append({
-                'merchant': transaction.get('merchant', ''),
-                'amount': transaction.get('amount', 0),
+                'merchant': raw_transaction.get('merchant', ''),
+                'amount': raw_transaction.get('amount', 0),
                 'predicted_category': result['category'],
                 'confidence': result['confidence'],
                 'needs_review': result['needs_feedback']
@@ -198,6 +168,8 @@ def classify_bulk():
         })
     
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': str(e)
@@ -301,6 +273,114 @@ def not_found(e):
 def server_error(e):
     """Handle 500 errors"""
     return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/history', methods=['GET'])
+def get_history():
+    """Get transaction history"""
+    try:
+        # Get last N transactions
+        limit = int(request.args.get('limit', 20))
+        
+        recent_transactions = transaction_history[-limit:]
+        recent_transactions.reverse()  # Most recent first
+        
+        # Remove embeddings from response (too large)
+        response_data = [
+            {
+                'id': t['id'],
+                'merchant': t['merchant'],
+                'amount': t['amount'],
+                'category': t['category'],
+                'confidence': t['confidence'],
+                'timestamp': t['timestamp'],
+                'payment_method': t['payment_method'],
+                'needs_review': t['needs_review']
+            }
+            for t in recent_transactions
+        ]
+        
+        return jsonify({
+            'success': True,
+            'transactions': response_data,
+            'total': len(transaction_history)
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+@app.route('/history/clear', methods=['POST'])
+def clear_history():
+    """Clear transaction history"""
+    try:
+        transaction_history.clear()
+        return jsonify({
+            'success': True,
+            'message': 'History cleared successfully'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+@app.route('/analytics', methods=['GET'])
+def get_analytics():
+    """Get spending analytics from history"""
+    try:
+        if len(transaction_history) == 0:
+            return jsonify({
+                'success': True,
+                'analytics': {
+                    'total_transactions': 0,
+                    'total_spent': 0,
+                    'by_category': {},
+                    'by_payment_method': {},
+                    'avg_confidence': 0
+                }
+            })
+        
+        # Calculate analytics
+        total_spent = sum(t['amount'] for t in transaction_history)
+        avg_confidence = sum(t['confidence'] for t in transaction_history) / len(transaction_history)
+        
+        # By category
+        by_category = {}
+        for t in transaction_history:
+            cat = t['category']
+            if cat not in by_category:
+                by_category[cat] = {'count': 0, 'amount': 0}
+            by_category[cat]['count'] += 1
+            by_category[cat]['amount'] += t['amount']
+        
+        # By payment method
+        by_payment = {}
+        for t in transaction_history:
+            pm = t['payment_method']
+            if pm not in by_payment:
+                by_payment[pm] = {'count': 0, 'amount': 0}
+            by_payment[pm]['count'] += 1
+            by_payment[pm]['amount'] += t['amount']
+        
+        return jsonify({
+            'success': True,
+            'analytics': {
+                'total_transactions': len(transaction_history),
+                'total_spent': round(total_spent, 2),
+                'by_category': by_category,
+                'by_payment_method': by_payment,
+                'avg_confidence': round(avg_confidence, 3),
+                'needs_review_count': sum(1 for t in transaction_history if t['needs_review'])
+            }
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
 
 if __name__ == '__main__':
     # Create templates directory if not exists

@@ -297,19 +297,95 @@
             display: flex;
             justify-content: space-between;
         }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .history-item.needs-review {
+            border-left-color: #ff9800;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .history-merchant {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .history-amount {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .history-details {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .analytics-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .analytics-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .category-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .category-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .similar-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin: 5px 5px 5px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎯 SmartLabel</h1>
-            <p>Autonomous AI Transaction Categorizer | GHCI Round 2 Hackathon</p>
+            <h1>SmartLabel</h1>
+            <p>Autonomous AI Transaction Categorizer</p>
         </div>
 
         <div class="card">
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('single')">Single Transaction</button>
                 <button class="tab" onclick="switchTab('bulk')">Bulk Upload</button>
+                <button class="tab" onclick="switchTab('history')">History</button>
+                <button class="tab" onclick="switchTab('analytics')">Analytics</button>
                 <button class="tab" onclick="switchTab('stats')">Statistics</button>
             </div>
 
@@ -401,6 +477,29 @@
                 </div>
             </div>
 
+            <!-- History Tab -->
+            <div id="history" class="tab-content">
+                <h2>Transaction History</h2>
+                <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                    <button class="btn" onclick="loadHistory()" style="flex: 1;">Refresh History</button>
+                    <button class="btn" onclick="clearHistory()" style="flex: 1; background: #f44336;">Clear All</button>
+                </div>
+                
+                <div id="historyList" style="margin-top: 20px;">
+                    <p style="text-align: center; color: #666;">Loading history...</p>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics" class="tab-content">
+                <h2>Spending Analytics</h2>
+                <button class="btn" onclick="loadAnalytics()" style="margin-bottom: 20px;">Refresh Analytics</button>
+                
+                <div id="analyticsContent">
+                    <p style="text-align: center; color: #666;">Loading analytics...</p>
+                </div>
+            </div>
+
             <!-- Statistics Tab -->
             <div id="stats" class="tab-content">
                 <h2>System Statistics</h2>
@@ -435,6 +534,10 @@
 
             if (tabName === 'stats') {
                 loadStats();
+            } else if (tabName === 'history') {
+                loadHistory();
+            } else if (tabName === 'analytics') {
+                loadAnalytics();
             }
         }
 
@@ -496,12 +599,19 @@
                 confidenceFill.style.background = 'linear-gradient(90deg, #ff9800, #ffc107)';
             }
 
-            explanation.innerHTML = `
-                <h4>Why this category?</h4>
-                <ul>
-                    ${data.explanation.reasoning.map(r => `<li>${r}</li>`).join('')}
-                </ul>
-            `;
+            let explanationHTML = `<h4>Why this category?</h4><ul>`;
+            explanationHTML += data.explanation.reasoning.map(r => `<li>${r}</li>`).join('');
+            explanationHTML += `</ul>`;
+            
+            // Add similar transactions
+            if (data.similar_transactions && data.similar_transactions.length > 0) {
+                explanationHTML += `<h4 style="margin-top: 15px;">Similar Past Transactions:</h4>`;
+                explanationHTML += data.similar_transactions.map(st => 
+                    `<div class="similar-badge">${st.merchant} - ${st.category} (${st.similarity}% similar)</div>`
+                ).join('');
+            }
+            
+            explanation.innerHTML = explanationHTML;
 
             if (data.alternatives && data.alternatives.length > 0) {
                 alternativesDiv.style.display = 'block';
@@ -648,6 +758,114 @@
                 handleFileUpload({target: {files: files}});
             }
         });
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/history?limit=20');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const historyList = document.getElementById('historyList');
+                    
+                    if (data.transactions.length === 0) {
+                        historyList.innerHTML = '<p style="text-align: center; color: #666;">No transactions yet. Classify some transactions to see them here!</p>';
+                        return;
+                    }
+                    
+                    historyList.innerHTML = data.transactions.map(t => `
+                        <div class="history-item ${t.needs_review ? 'needs-review' : ''}">
+                            <div class="history-header">
+                                <div class="history-merchant">${t.merchant}</div>
+                                <div class="history-amount">₹${t.amount}</div>
+                            </div>
+                            <div class="history-details">
+                                <span>📂 ${t.category}</span>
+                                <span>💳 ${t.payment_method}</span>
+                                <span>🎯 ${(t.confidence * 100).toFixed(1)}% confident</span>
+                                <span>🕐 ${new Date(t.timestamp).toLocaleString()}</span>
+                            </div>
+                            ${t.needs_review ? '<div style="margin-top: 10px; color: #ff9800;">⚠️ Needs review</div>' : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        async function clearHistory() {
+            if (!confirm('Are you sure you want to clear all transaction history?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/history/clear', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('History cleared successfully!');
+                    loadHistory();
+                }
+            } catch (error) {
+                alert('Error clearing history: ' + error.message);
+            }
+        }
+
+        async function loadAnalytics() {
+            try {
+                const response = await fetch('/analytics');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const analytics = data.analytics;
+                    const content = document.getElementById('analyticsContent');
+                    
+                    if (analytics.total_transactions === 0) {
+                        content.innerHTML = '<p style="text-align: center; color: #666;">No transactions yet. Start classifying to see analytics!</p>';
+                        return;
+                    }
+                    
+                    let html = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                            <div class="analytics-card">
+                                <h3>${analytics.total_transactions}</h3>
+                                <p>Total Transactions</p>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>₹${analytics.total_spent.toFixed(2)}</h3>
+                                <p>Total Spent</p>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>${(analytics.avg_confidence * 100).toFixed(1)}%</h3>
+                                <p>Avg Confidence</p>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>${analytics.needs_review_count}</h3>
+                                <p>Need Review</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Spending by Category</h3>
+                        <div class="category-breakdown">
+                    `;
+                    
+                    for (const [category, info] of Object.entries(analytics.by_category)) {
+                        html += `
+                            <div class="category-item">
+                                <h4>${category}</h4>
+                                <p><strong>₹${info.amount.toFixed(2)}</strong></p>
+                                <p>${info.count} transactions</p>
+                            </div>
+                        `;
+                    }
+                    
+                    html += '</div>';
+                    content.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
     </script>
 </body>
 </html>
