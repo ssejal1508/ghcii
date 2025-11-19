@@ -77,8 +77,8 @@ Then open **http://localhost:5000** in your browser
 
 | Metric | Target | Achieved |
 |--------|--------|----------|
-| **Macro F1 Score** | ≥ 0.90 | ✅ 0.99+ |
-| **Overall Accuracy** | High | ✅ 92-95% |
+| **Macro F1 Score** | ≥ 0.90 | ✅ 96.34 |
+| **Overall Accuracy** | High | ✅ 96.10 |
 | **Categories** | Flexible | 12 customizable |
 | **Dataset Size** | Large | 50,000 transactions |
 | **Features** | Rich | 70+ engineered features |
