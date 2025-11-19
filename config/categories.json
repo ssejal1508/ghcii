@@ -1,0 +1,66 @@
+{
+  "categories": {
+    "Food - Dining Out": {
+      "keywords": ["restaurant", "cafe", "pizza", "burger", "biryani", "dosa", "dhaba", "hotel", "mcdonald", "kfc", "subway", "domino", "truffles", "social", "barbeque", "cafe coffee day", "starbucks", "barista"],
+      "amount_range": [100, 2000],
+      "typical_hours": [12, 14, 19, 22]
+    },
+    "Food - Delivery": {
+      "keywords": ["swiggy", "zomato", "dunzo", "zepto", "blinkit", "instamart", "delivery", "box8", "faasos"],
+      "amount_range": [50, 1500],
+      "typical_hours": [8, 13, 20, 23]
+    },
+    "Food - Groceries": {
+      "keywords": ["dmart", "reliance fresh", "bigbasket", "grofers", "grocery", "supermarket", "kirana", "vegetables", "fruits", "big bazaar"],
+      "amount_range": [200, 5000],
+      "typical_hours": [10, 12, 17, 19]
+    },
+    "Transportation": {
+      "keywords": ["uber", "ola", "rapido", "metro", "bus", "petrol", "diesel", "parking", "toll", "fastag", "meru"],
+      "amount_range": [20, 1000],
+      "typical_hours": [7, 9, 17, 20]
+    },
+    "Entertainment": {
+      "keywords": ["bookmyshow", "pvr", "inox", "netflix", "prime", "hotstar", "spotify", "youtube", "gaming", "game", "playstation", "steam"],
+      "amount_range": [99, 2000],
+      "typical_hours": [18, 23]
+    },
+    "Shopping - Essentials": {
+      "keywords": ["amazon", "flipkart", "myntra", "ajio", "meesho", "stationery", "books", "medical", "pharmacy", "apollo", "netmeds", "pharmeasy"],
+      "amount_range": [100, 10000],
+      "typical_hours": [10, 22]
+    },
+    "Shopping - Non-Essentials": {
+      "keywords": ["nykaa", "fashion", "accessories", "jewelry", "perfume", "cosmetics", "lifestyle", "westside", "pantaloons", "zara"],
+      "amount_range": [200, 15000],
+      "typical_hours": [10, 22]
+    },
+    "Education": {
+      "keywords": ["course", "udemy", "coursera", "unacademy", "byju", "tuition", "college", "university", "fees", "books", "vedantu", "toppr"],
+      "amount_range": [500, 50000],
+      "typical_hours": [9, 18]
+    },
+    "Bills & Utilities": {
+      "keywords": ["electricity", "water", "gas", "broadband", "jio", "airtel", "vodafone", "recharge", "postpaid", "bescom", "tata sky", "dish tv"],
+      "amount_range": [100, 5000],
+      "typical_hours": [0, 23]
+    },
+    "Health & Fitness": {
+      "keywords": ["gym", "fitness", "yoga", "doctor", "hospital", "clinic", "lab", "test", "medicine", "cult fit", "pathlab"],
+      "amount_range": [100, 10000],
+      "typical_hours": [6, 20]
+    },
+    "Transfer - Personal": {
+      "keywords": [],
+      "amount_range": [10, 100000],
+      "typical_hours": [0, 23]
+    },
+    "Other": {
+      "keywords": [],
+      "amount_range": [0, 1000000],
+      "typical_hours": [0, 23]
+    }
+  },
+  "version": "1.0",
+  "last_updated": "2024-01-01"
+}

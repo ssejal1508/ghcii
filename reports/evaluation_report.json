@@ -1,0 +1,316 @@
+{
+  "overall_metrics": {
+    "macro_f1": 0.9528497216861821,
+    "micro_f1": 0.952,
+    "weighted_f1": 0.9530282569936648,
+    "accuracy": 0.952
+  },
+  "per_class_metrics": [
+    {
+      "Category": "Bills & Utilities",
+      "Precision": 0.9861111111111112,
+      "Recall": 0.9861111111111112,
+      "F1-Score": 0.9861111111111112,
+      "Support": 72
+    },
+    {
+      "Category": "Education",
+      "Precision": 1.0,
+      "Recall": 0.9761904761904762,
+      "F1-Score": 0.9879518072289156,
+      "Support": 84
+    },
+    {
+      "Category": "Entertainment",
+      "Precision": 1.0,
+      "Recall": 0.9647058823529412,
+      "F1-Score": 0.9820359281437125,
+      "Support": 85
+    },
+    {
+      "Category": "Food - Delivery",
+      "Precision": 1.0,
+      "Recall": 0.7654320987654321,
+      "F1-Score": 0.8671328671328671,
+      "Support": 81
+    },
+    {
+      "Category": "Food - Dining Out",
+      "Precision": 0.8604651162790697,
+      "Recall": 0.9866666666666667,
+      "F1-Score": 0.9192546583850931,
+      "Support": 75
+    },
+    {
+      "Category": "Food - Groceries",
+      "Precision": 1.0,
+      "Recall": 0.9183673469387755,
+      "F1-Score": 0.9574468085106383,
+      "Support": 98
+    },
+    {
+      "Category": "Health & Fitness",
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1-Score": 1.0,
+      "Support": 83
+    },
+    {
+      "Category": "Other",
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1-Score": 1.0,
+      "Support": 92
+    },
+    {
+      "Category": "Shopping - Essentials",
+      "Precision": 1.0,
+      "Recall": 0.9120879120879121,
+      "F1-Score": 0.9540229885057471,
+      "Support": 91
+    },
+    {
+      "Category": "Shopping - Non-Essentials",
+      "Precision": 0.9859154929577465,
+      "Recall": 0.9722222222222222,
+      "F1-Score": 0.9790209790209791,
+      "Support": 72
+    },
+    {
+      "Category": "Transfer - Personal",
+      "Precision": 0.7391304347826086,
+      "Recall": 1.0,
+      "F1-Score": 0.85,
+      "Support": 85
+    },
+    {
+      "Category": "Transportation",
+      "Precision": 0.9512195121951219,
+      "Recall": 0.9512195121951219,
+      "F1-Score": 0.9512195121951219,
+      "Support": 82
+    }
+  ],
+  "confusion_matrix": [
+    [
+      71,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      82,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0
+    ],
+    [
+      0,
+      0,
+      82,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      62,
+      12,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      4
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      74,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      90,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      83,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      92,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      83,
+      1,
+      7,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      70,
+      2,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      85,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      4,
+      78
+    ]
+  ],
+  "top_misclassifications": [
+    {
+      "true": "Food - Delivery",
+      "predicted": "Food - Dining Out",
+      "count": 12
+    },
+    {
+      "true": "Food - Groceries",
+      "predicted": "Transfer - Personal",
+      "count": 7
+    },
+    {
+      "true": "Shopping - Essentials",
+      "predicted": "Transfer - Personal",
+      "count": 7
+    },
+    {
+      "true": "Food - Delivery",
+      "predicted": "Transportation",
+      "count": 4
+    },
+    {
+      "true": "Transportation",
+      "predicted": "Transfer - Personal",
+      "count": 4
+    },
+    {
+      "true": "Entertainment",
+      "predicted": "Transfer - Personal",
+      "count": 3
+    },
+    {
+      "true": "Food - Delivery",
+      "predicted": "Transfer - Personal",
+      "count": 3
+    },
+    {
+      "true": "Education",
+      "predicted": "Transfer - Personal",
+      "count": 2
+    },
+    {
+      "true": "Shopping - Non-Essentials",
+      "predicted": "Transfer - Personal",
+      "count": 2
+    },
+    {
+      "true": "Bills & Utilities",
+      "predicted": "Transfer - Personal",
+      "count": 1
+    }
+  ]
+}

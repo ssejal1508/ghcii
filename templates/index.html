@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLabel - AI Transaction Categorizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .confidence-bar {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            transition: width 0.5s;
+        }
+
+        .explanation {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .explanation h4 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .explanation ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .explanation li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .explanation li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            background: #f0f0f0;
+        }
+
+        .file-upload.dragover {
+            background: #e8eaf6;
+            border-color: #764ba2;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feedback-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .feedback-section h4 {
+            margin-bottom: 15px;
+            color: #856404;
+        }
+
+        .alternatives {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+        }
+
+        .alternatives h4 {
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+
+        .alternative-item {
+            padding: 8px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 SmartLabel</h1>
+            <p>Autonomous AI Transaction Categorizer | GHCI Round 2 Hackathon</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('single')">Single Transaction</button>
+                <button class="tab" onclick="switchTab('bulk')">Bulk Upload</button>
+                <button class="tab" onclick="switchTab('stats')">Statistics</button>
+            </div>
+
+            <!-- Single Transaction Tab -->
+            <div id="single" class="tab-content active">
+                <h2>Classify a Transaction</h2>
+                <form id="singleForm">
+                    <div class="form-group">
+                        <label for="merchant">Merchant Name *</label>
+                        <input type="text" id="merchant" placeholder="e.g., Swiggy, Uber India, Netflix" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount (₹) *</label>
+                        <input type="number" id="amount" step="0.01" placeholder="e.g., 350.50" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select id="payment_method">
+                            <option value="UPI">UPI</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Net Banking">Net Banking</option>
+                            <option value="Wallet">Wallet</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timestamp">Date & Time</label>
+                        <input type="datetime-local" id="timestamp">
+                    </div>
+
+                    <button type="submit" class="btn">Classify Transaction</button>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing transaction...</p>
+                </div>
+
+                <div class="result" id="result">
+                    <div class="category-badge" id="categoryBadge"></div>
+                    
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                    </div>
+
+                    <div class="explanation" id="explanation"></div>
+
+                    <div class="alternatives" id="alternatives" style="display: none;">
+                        <h4>Alternative Predictions</h4>
+                        <div id="alternativesList"></div>
+                    </div>
+
+                    <div class="feedback-section" id="feedbackSection" style="display: none;">
+                        <h4>⚠️ Low Confidence - Please Verify</h4>
+                        <p>SmartLabel is not very confident about this classification. Please correct if needed:</p>
+                        <select id="correctCategory" class="form-control">
+                            <option value="">Select correct category...</option>
+                        </select>
+                        <button class="btn" onclick="submitFeedback()" style="margin-top: 10px;">Submit Feedback</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Upload Tab -->
+            <div id="bulk" class="tab-content">
+                <h2>Bulk Classification</h2>
+                <p style="margin-bottom: 20px;">Upload a CSV file with your transactions for batch processing</p>
+                
+                <div class="file-upload" id="fileUpload" onclick="document.getElementById('fileInput').click()">
+                    <p style="font-size: 48px; margin-bottom: 10px;">📁</p>
+                    <p style="font-weight: 600; margin-bottom: 5px;">Click to upload or drag & drop</p>
+                    <p style="color: #666; font-size: 14px;">CSV files only</p>
+                    <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="handleFileUpload(event)">
+                </div>
+
+                <button class="btn" onclick="downloadTemplate()" style="margin-top: 20px; background: #4caf50;">
+                    Download CSV Template
+                </button>
+
+                <div class="result" id="bulkResult">
+                    <h3>Classification Results</h3>
+                    <p id="bulkStats"></p>
+                    <button class="btn" onclick="downloadResults()" style="margin-top: 15px; background: #4caf50;">
+                        Download Results
+                    </button>
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="stats" class="tab-content">
+                <h2>System Statistics</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <h3>...</h3>
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentResult = null;
+        let categories = [];
+
+        // Load stats on page load
+        window.addEventListener('load', () => {
+            loadStats();
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('timestamp').value = now.toISOString().slice(0, 16);
+        });
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'stats') {
+                loadStats();
+            }
+        }
+
+        document.getElementById('singleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const merchant = document.getElementById('merchant').value;
+            const amount = document.getElementById('amount').value;
+            const payment_method = document.getElementById('payment_method').value;
+            const timestamp = document.getElementById('timestamp').value || new Date().toISOString();
+            
+            const hour = new Date(timestamp).getHours();
+            const is_weekend = [0, 6].includes(new Date(timestamp).getDay()) ? 1 : 0;
+
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('result').classList.remove('show');
+
+            try {
+                const response = await fetch('/classify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        merchant, amount, payment_method, timestamp, hour, is_weekend
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResult(data);
+                    currentResult = {merchant, amount, timestamp, ...data};
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+            }
+        });
+
+        function displayResult(data) {
+            const resultDiv = document.getElementById('result');
+            const categoryBadge = document.getElementById('categoryBadge');
+            const confidenceFill = document.getElementById('confidenceFill');
+            const explanation = document.getElementById('explanation');
+            const feedbackSection = document.getElementById('feedbackSection');
+            const alternativesDiv = document.getElementById('alternatives');
+
+            categoryBadge.textContent = data.category;
+            
+            const confidencePercent = (data.confidence * 100).toFixed(1);
+            confidenceFill.style.width = confidencePercent + '%';
+            confidenceFill.textContent = confidencePercent + '% Confident';
+            
+            if (data.confidence < 0.7) {
+                confidenceFill.style.background = 'linear-gradient(90deg, #f44336, #ff9800)';
+            } else if (data.confidence < 0.85) {
+                confidenceFill.style.background = 'linear-gradient(90deg, #ff9800, #ffc107)';
+            }
+
+            explanation.innerHTML = `
+                <h4>Why this category?</h4>
+                <ul>
+                    ${data.explanation.reasoning.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+            `;
+
+            if (data.alternatives && data.alternatives.length > 0) {
+                alternativesDiv.style.display = 'block';
+                document.getElementById('alternativesList').innerHTML = data.alternatives.slice(0, 3).map(alt => `
+                    <div class="alternative-item">
+                        <span>${alt[0]}</span>
+                        <span>${(alt[1] * 100).toFixed(1)}%</span>
+                    </div>
+                `).join('');
+            }
+
+            if (data.needs_feedback) {
+                feedbackSection.style.display = 'block';
+                const select = document.getElementById('correctCategory');
+                select.innerHTML = '<option value="">Select correct category...</option>' + 
+                    data.alternatives.map(alt => `<option value="${alt[0]}">${alt[0]}</option>`).join('');
+            } else {
+                feedbackSection.style.display = 'none';
+            }
+
+            resultDiv.classList.add('show');
+        }
+
+        async function submitFeedback() {
+            const correctCategory = document.getElementById('correctCategory').value;
+            if (!correctCategory) {
+                alert('Please select the correct category');
+                return;
+            }
+
+            try {
+                const response = await fetch('/feedback', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        merchant: currentResult.merchant,
+                        amount: currentResult.amount,
+                        timestamp: currentResult.timestamp,
+                        predicted_category: currentResult.category,
+                        correct_category: correctCategory,
+                        confidence: currentResult.confidence
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('feedbackSection').style.display = 'none';
+                }
+            } catch (error) {
+                alert('Error submitting feedback: ' + error.message);
+            }
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('loading').classList.add('show');
+
+            try {
+                const response = await fetch('/classify_bulk', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('bulkStats').innerHTML = `
+                        ✅ Classified ${data.total} transactions<br>
+                        ⚠️ ${data.needs_review} transactions need review
+                    `;
+                    document.getElementById('bulkResult').classList.add('show');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('statsGrid').innerHTML = `
+                        <div class="stat-card">
+                            <h3>${data.total_categories}</h3>
+                            <p>Categories</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.feedback_received}</h3>
+                            <p>Feedback Received</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${(data.confidence_threshold * 100).toFixed(0)}%</h3>
+                            <p>Confidence Threshold</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>${data.model_version}</h3>
+                            <p>Model Version</p>
+                        </div>
+                    `;
+                    categories = data.categories;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function downloadTemplate() {
+            window.location.href = '/download/template';
+        }
+
+        function downloadResults() {
+            window.location.href = '/download/classified';
+        }
+
+        // Drag and drop
+        const fileUpload = document.getElementById('fileUpload');
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.classList.add('dragover');
+        });
+
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.classList.remove('dragover');
+        });
+
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('fileInput').files = files;
+                handleFileUpload({target: {files: files}});
+            }
+        });
+    </script>
+</body>
+</html>
